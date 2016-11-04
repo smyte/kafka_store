@@ -42,7 +42,7 @@ except ImportError:
     def configure_logging(level):
         logging.getLogger().setLevel(level)
 
-if __name__ == '__main__':
+def main():
     arguments = docopt(__doc__)
 
     if setup_config:
@@ -83,9 +83,13 @@ if __name__ == '__main__':
         stores.append(
             MySQLStore(arguments['--mysql-url'])
         )
+
     loop.run(KafkaStoreHandler(
         loop,
         stores=stores,
         max_age_ms=UPLOAD_MAX_AGE_MS,
         max_size=UPLOAD_BYTES,
     ))
+
+if __name__ == '__main__':
+    main()

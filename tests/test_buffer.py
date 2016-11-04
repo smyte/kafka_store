@@ -1,7 +1,7 @@
 import time
 from mock import patch
 
-from kafka_store.partition import (
+from kafka_store.buffer import (
     KAFKA_SKEW_MS,
     PartitionBuffer,
 )

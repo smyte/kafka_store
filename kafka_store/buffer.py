@@ -12,8 +12,8 @@ SCHEMA = {
   "type": "record",
   "fields": [
     {"name": "timestamp", "type": "long"},
-    {"name": "key", "type": "bytes"},
-    {"name": "value", "type": "bytes"}
+    {"name": "key", "type": ["null", "bytes"]},
+    {"name": "value", "type": ["null", "bytes"]}
   ]
 }
 
@@ -24,7 +24,7 @@ SCHEMA = {
 HOUR_MS = 3600 * 1000
 KAFKA_SKEW_MS = 8 * HOUR_MS
 
-logger = logging.getLogger('kafka_store.partition')
+logger = logging.getLogger('kafka_store.buffer')
 
 class OutputFile:
     def __init__(self, file):
@@ -81,8 +81,8 @@ class PartitionBuffer:
         assert offset == self.first_offset + self.count
         assert not self.closed
         self._writer.write({
-            'key': key or b'',
-            'value': value or b'',
+            'key': key,
+            'value': value,
             'timestamp': timestamp_ms,
         })
         self.count += 1

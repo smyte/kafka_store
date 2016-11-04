@@ -49,11 +49,6 @@ class GCloudStore:
             'offset': buffer.first_offset,
         })
 
-        # @NOTE: The simpler gcloud.storage does not support md5Hash
-        # bucket = gcloud.storage.Client().get_bucket(name)
-        # blob = Blob(path, bucket)
-        # blob.upload_from_file(buffer.get_file(), rewind=True, content_type='avro/binary')
-
         file_obj = buffer.get_rewound_file()
         md5_base64 = base64.b64encode(buffer.md5).decode('ascii')
         self.objects.insert(

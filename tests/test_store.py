@@ -2,7 +2,7 @@ import pytest
 import time
 from googleapiclient.http import HttpError
 
-from kafka_store.partition import PartitionBuffer
+from kafka_store.buffer import PartitionBuffer
 from kafka_store.store import (
     GCloudStore,
     MySQLStore,
