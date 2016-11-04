@@ -15,7 +15,7 @@ requirements = [
     'mock',
     'mysqlclient',
     'fastavro',
-    'confluent-kafka-python',
+    'confluent_kafka',
     'smyte_pylib',
 ]
 
