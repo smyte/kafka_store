@@ -4,5 +4,6 @@ mock==1.0.1
 mysqlclient==1.3.9
 
 -e git+https://github.com/tebeka/fastavro.git@644837ddec82ed883d0e7f655c87a2e3ba1376b4#egg=fastavro
--e git+https://github.com/qix/confluent-kafka-python.git@339cb33486fde788c6cb5cde8757fb8117c627b7#egg=confluent-kafka-python
+-e git+https://github.com/smyte-forks/confluent-kafka-python.git@0f993ee0f190473cdcdde97e236016b8bc45834d#egg=confluent-kafka-python
+-e git+https://github.com/smyte/smyte_pylib.git@05ca3618608f9fcf289af65db6244e551202abd8#egg=smyte_pylib
 
