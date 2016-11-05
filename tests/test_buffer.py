@@ -66,6 +66,6 @@ def test_buffer():
 
     records = list(reader(p.get_rewound_file()))
     assert records == [
-        {'key': b'', 'timestamp': start_ms + idx * MINUTE_IN_MS, 'value': b'<%d>' % idx}
+        {'key': b'', 'timestamp': start_ms + idx * MINUTE_IN_MS, 'value': ('<%d>' % idx).encode('ascii')}
         for idx in range(5)
     ]

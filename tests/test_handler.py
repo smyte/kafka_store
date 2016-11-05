@@ -49,7 +49,7 @@ def test_buffer(mock_time):
     # Log eight messages within a 60-second period
     offset_ms = [10000, 20000, 30000, 40000, 50000, 60000, 65000, 69999]
     for idx in range(len(offset_ms)):
-        _process(offset_ms[idx], None, b'message#%d' % idx)
+        _process(offset_ms[idx], None, ('message#%d' % idx).encode('ascii'))
 
     assert store.save.call_count == 0
 
@@ -61,7 +61,7 @@ def test_buffer(mock_time):
     assert list(reader(buffer.get_rewound_file())) == [
         {
             'key': None,
-            'value': b'message#%d' % idx,
+            'value': ('message#%d' % idx).encode('ascii'),
             'timestamp': start_ms + offset_ms[idx],
         }
         for idx in range(len(offset_ms))
