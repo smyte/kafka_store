@@ -1,3 +1,4 @@
+import os
 import pytest
 import time
 from googleapiclient.http import HttpError
@@ -29,7 +30,12 @@ def _create_buffer():
     p.close()
     return p
 
+@pytest.mark.skipif(
+    os.environ.get('SKIP_INTEGRATION_TESTS'),
+    reason='Skipping integration tests'
+)
 def test_gcloud():
+    raise Exception('ooh')
     buffer = _create_buffer()
 
     # Make sure we can upload; but upload fails if md5 is wrong.
@@ -42,6 +48,10 @@ def test_gcloud():
         store.save(buffer)
     excinfo.match('Provided MD5 hash "[^"]+" doesn\'t match calculated MD5 hash')
 
+@pytest.mark.skipif(
+    os.environ.get('SKIP_INTEGRATION_TESTS'),
+    reason='Skipping integration tests'
+)
 def test_mysql():
     buffer = _create_buffer()
     store = MySQLStore(TEST_MYSQL_URL)
