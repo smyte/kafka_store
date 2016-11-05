@@ -19,6 +19,12 @@ before_install:
   - curl -sL https://github.com/authbox/librdkafka/archive/5576b5a928e079518cd049234963f5b7c599c58d.tar.gz | tar -C ~/librdkafka --strip-components=1 -xz
   - (cd ~/librdkafka && ./configure && make && sudo make install)
 
+# install patched librdkafka version
+before_install:
+  - mkdir ~/librdkafka
+  - curl -sL https://github.com/authbox/librdkafka/archive/5576b5a928e079518cd049234963f5b7c599c58d.tar.gz | tar -C ~/librdkafka --strip-components=1 -xz
+  - (cd ~/librdkafka && ./configure && make && sudo make install)
+
 # command to install dependencies, e.g. pip install -r requirements.txt --use-mirrors
 install: pip install -U tox
 
