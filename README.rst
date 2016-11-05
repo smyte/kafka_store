@@ -9,10 +9,6 @@ Kafka Store
 .. image:: https://img.shields.io/travis/smyte/kafka_store.svg
         :target: https://travis-ci.org/smyte/kafka_store
 
-.. image:: https://readthedocs.org/projects/kafka-store/badge/?version=latest
-        :target: https://kafka-store.readthedocs.io/en/latest/?badge=latest
-        :alt: Documentation Status
-
 .. image:: https://pyup.io/repos/github/smyte/kafka_store/shield.svg
      :target: https://pyup.io/repos/github/smyte/kafka_store/
      :alt: Updates
