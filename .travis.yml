@@ -12,7 +12,6 @@ env:
   - TOXENV=py35
   - TOXENV=py34
   - TOXENV=py33
-  - TOXENV=pypy
 
 # install patched librdkafka version
 before_install:
