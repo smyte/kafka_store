@@ -22,12 +22,17 @@ Our guarantee is **stronger**. By using the new timestamp feature of Kafka we ca
 
 ## Requirements
 
-* Timestamps must be enabled on your Kafka Broker.
+* Timestamps must be enabled on your Kafka Broker. This requires newer versions of Kafka and minimum protocol 0.10.0.0 enabled.
+* Your `librdkafka` must be support timestamps. If you're using compression you might want to check our [un-merged patch](https://github.com/edenhill/librdkafka/pull/858).
 * We do not (yet) support compacted topics.
-* 
-fault tolerance: any component of Secor is allowed to crash at any given point without compromising data integrity,
-load distribution: Secor may be distributed across multiple machines,
-horizontal scalability: scaling the system out to handle more load is as easy as starting extra Secor processes. Reducing the resource footprint can be achieved by killing any of the running Secor processes. Neither ramping up nor down has any impact on data consistency,
 
-* TODO
+## Example
 
+## Future work
+
+We're releasing a product that works as required by us, but we're very aware it won't fulful all (or even most) of potential use cases. Unfortunately as a startup we don't have the time to spare to complete these, but we're happy to review pull requests and work with the community to get required features out the door.
+
+* Configuration file rather than taking all options via the command line. This will be a pre-requisite for most of the other tasks.
+* Full support for Google Cloud authentication. At the moment we're running inside GCE so the default authentication *just works*.
+* Support for S3, Azure, and other long term storage systems.
+* Consuming from mulitple topics on the same instance. At the moment we only support a single topic.
