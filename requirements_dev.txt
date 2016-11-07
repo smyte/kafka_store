@@ -1,9 +1,5 @@
 coverage==4.2
 flake8==3.0.4
 mock==2.0.0
-pip==9.0.0
 pytest==3.0.3
-Sphinx==1.4.8
 tox==2.4.1
-watchdog==0.8.3
-wheel==0.29.0
