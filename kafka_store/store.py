@@ -1,4 +1,6 @@
 import base64
+import os
+import shutil
 import MySQLdb
 from googleapiclient import discovery
 from googleapiclient import http
@@ -30,7 +32,25 @@ except ImportError:
             db=parsed.path.strip('/'),
         )
 
-PATH = '%(topic)s/%(partition)06d/%(offset)020d'
+
+class LocalStore:
+    def __init__(self, path):
+        assert os.path.exists(path) and os.path.isdir(path), (
+            'Provided path did not exist or was not a directory: %s' % path
+        )
+        self.path = path
+
+    def save(self, buffer):
+        path = os.path.join(self.path, buffer.path)
+
+        folder = os.path.dirname(path)
+        if not os.path.exists(folder):
+            os.makedirs(folder)
+
+        file_obj = buffer.get_rewound_file()
+        with open(path, 'wb') as output_fo:
+            shutil.copyfileobj(file_obj, output_fo)
+
 
 class GCloudStore:
     def __init__(self, url):
@@ -43,11 +63,7 @@ class GCloudStore:
         self.prefix = (parsed.path or '').strip('/') + '/'
 
     def save(self, buffer):
-        path = urljoin(self.prefix, PATH % {
-            'topic': buffer.topic,
-            'partition': buffer.partition,
-            'offset': buffer.first_offset,
-        })
+        path = urljoin(self.prefix, buffer.path)
 
         file_obj = buffer.get_rewound_file()
         md5_base64 = base64.b64encode(buffer.md5).decode('ascii')
@@ -65,7 +81,7 @@ class GCloudStore:
             bucket=self.bucket,
         ).execute()
 
-class MySQLStore:
+class MySQLMetadataStore:
     def __init__(self, url):
         self.mysql = mysql_from_url(url)
 

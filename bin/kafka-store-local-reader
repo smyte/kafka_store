@@ -1,0 +1,77 @@
+#!/usr/bin/env python3
+"""kafka-store-local-reader
+
+Prints locally saved kafka-store records in json format
+Usage:
+  kafka-store-local-reader <path> [options]
+  kafka-store-local-reader (-h | --help)
+
+Options:
+  --wait                          Wait for files if they are not written yet
+
+  -h --help                       Show this screen.
+  -v --verbose                    Enable verbose output
+"""
+
+import json
+import os
+import re
+import sys
+import time
+from docopt import docopt
+
+from kafka_store.read import read_file
+
+def _utf8_value(value):
+    if value is None:
+        return None
+    return value.decode('utf-8')
+
+def _wait_path(path):
+    while not os.path.exists(path):
+        time.sleep(1)
+
+def main():
+    arguments = docopt(__doc__)
+
+    path = arguments['<path>']
+    dir = os.path.dirname(path)
+    filename = os.path.basename(path)
+
+    if len(filename) != 20 or not re.match('^0*[1-9][0-9]*$', filename):
+        sys.stderr.write(
+            'Filename was not standard kafka-store output (20 digits)\n'
+        )
+        sys.exit(1)
+
+    next_offset = int(filename, 10)
+    while True:
+        path = os.path.join(dir, filename)
+
+
+        if not os.path.exists(path):
+            if arguments['--wait']:
+                sys.stderr.write('Next file not ready yet. Waiting for: %s\n' % (
+                    path
+                ))
+                sys.stderr.flush()
+                sys.stdout.flush()
+                _wait_path(path)
+            else:
+                sys.stderr.write('Next file not ready.');
+                break
+
+        for record in read_file(path):
+            print(json.dumps({
+                'filename': filename,
+                'offset': next_offset,
+                'key': _utf8_value(record['key']),
+                'value': _utf8_value(record['value']),
+                'timestamp': record['timestamp'],
+            }, sort_keys=True))
+            next_offset += 1
+
+        filename = '%020d' % next_offset
+
+if __name__ == '__main__':
+    main()

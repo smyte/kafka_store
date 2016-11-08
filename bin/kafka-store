@@ -1,0 +1,117 @@
+#!/usr/bin/env python3
+"""kafka-store
+
+Usage:
+  ./main --broker-list <broker> --topic <topic> --group <group> [options]
+  ./main (-h | --help)
+
+Options:
+  -h --help                       Show this screen.
+  -v --verbose                    Enable verbose output
+  --topic <topic>                 Consumer topic to consume from
+
+Kafka consumer options:
+  --broker-list <broker>          Kafka broker list
+  --group <group>                 Consumer group id to use
+  --offset-reset <reset>          Reset offset on start
+
+File closing options:
+  --file-size <size>              File size to close after [default: 64M]
+  --file-age-seconds <age>        Max file age in seconds [default: 3600]
+
+Stores:
+  --gcloud-store-url <url>        Google store url for files
+  --local-store <path>            Store files on the local filesystem
+
+Metadata stores:
+  --mysql-metadata-url <url>      MySQL server to write updates to
+"""
+
+import bitmath
+import logging
+import sys
+from docopt import docopt
+
+from kafka_store.handler import KafkaStoreHandler
+from kafka_store.store import (
+    GCloudStore,
+    LocalStore,
+    MySQLMetadataStore,
+)
+from smyte_pylib.kafka.loop import KafkaLoop
+
+# Try fetch some Smyte-specific initialization configuration, but fall back to
+# sane defaults if they're missing
+try:
+    from pylib.config import setup_config
+    from pylib.log import configure_logging
+    from pylib.kafka10 import get_bootstrap_servers
+except ImportError:
+    setup_config = lambda paths: None
+    get_bootstrap_servers = lambda group: None
+    def configure_logging(level):
+        logging.basicConfig(level=level)
+
+def main():
+    arguments = docopt(__doc__)
+
+    if setup_config:
+        setup_config([])
+
+    configure_logging(
+        logging.INFO if arguments['--verbose'] else logging.WARNING
+    )
+
+    config = {
+        'api.version.request': True,
+        'queued.max.messages.kbytes': 10 * 1024,
+    }
+
+    max_size = int(bitmath.parse_string_unsafe(arguments['--file-size']).bytes)
+    max_age_ms = int(arguments['--file-age-seconds']) * 1000
+
+    broker_list = arguments.get('--broker-list')
+    if broker_list is None and get_bootstrap_servers:
+        broker_list = get_bootstrap_servers(arguments['--group'])
+    if broker_list is not None:
+        config['metadata.broker.list'] = broker_list
+
+    loop = KafkaLoop(
+        topic=arguments['--topic'],
+        group=arguments['--group'],
+        auto_commit=False,
+        offset_reset=arguments.get('--offset-reset') or 'error',
+        consumer_config=config,
+    )
+
+    stores = []
+
+    if arguments['--gcloud-store-url']:
+        stores.append(
+            GCloudStore(arguments['--gcloud-store-url'])
+        )
+
+    if arguments['--local-store']:
+        stores.append(
+            LocalStore(arguments['--local-store'])
+        )
+
+    if not stores:
+        sys.stderr.write('Error: At least one output store is required.\n')
+        sys.exit(1)
+
+    # Include mysql, but require an actual store to be specified
+    if arguments['--mysql-metadata-url']:
+        stores.append(
+            MySQLMetadataStore(arguments['--mysql-metadata-url'])
+        )
+
+    loop.run(KafkaStoreHandler(
+        loop,
+        stores=stores,
+        max_age_ms=max_age_ms,
+        max_size=max_size,
+    ))
+
+if __name__ == '__main__':
+    main()

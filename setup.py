@@ -1,6 +1,7 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
+from glob import glob
 from setuptools import setup
 
 with open('README.md') as readme_file:
@@ -10,6 +11,7 @@ with open('HISTORY.md') as history_file:
     history = history_file.read()
 
 requirements = [
+    'bitmath',
     'docopt',
     'google-api-python-client',
     'mock',
@@ -36,6 +38,7 @@ setup(
     ],
     package_dir={'kafka_store':
                  'kafka_store'},
+    scripts=glob('bin/*'),
     include_package_data=True,
     install_requires=requirements,
     license="Apache Software License 2.0",

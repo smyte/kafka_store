@@ -28,16 +28,18 @@ class KafkaStoreHandler:
             self.buffers.pop((topic, partition), None)
 
     def _commit_buffer(self, buffer_key):
-        self.buffers[buffer_key].close()
+        buffer = self.buffers.pop(buffer_key)
+
+        buffer.close()
         for store in self.stores:
-            store.save(self.buffers[buffer_key])
+            store.save(buffer)
 
         self.loop.commit_next_offset(
-            self.buffers[buffer_key].topic,
-            self.buffers[buffer_key].partition,
-            self.buffers[buffer_key].commit_next_offset
+            buffer.topic,
+            buffer.partition,
+            buffer.commit_next_offset
         )
-        del self.buffers[buffer_key]
+        logger.info('Committed %s', buffer.path)
 
     def _commit_aged_buffers(self):
         buffer_keys = [

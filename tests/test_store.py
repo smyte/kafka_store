@@ -6,7 +6,7 @@ from googleapiclient.http import HttpError
 from kafka_store.buffer import PartitionBuffer
 from kafka_store.store import (
     GCloudStore,
-    MySQLStore,
+    MySQLMetadataStore,
 )
 
 TEST_GCLOUD_URL = 'gs://authbox-kafka-dev'
@@ -54,5 +54,5 @@ def test_gcloud():
 )
 def test_mysql():
     buffer = _create_buffer()
-    store = MySQLStore(TEST_MYSQL_URL)
+    store = MySQLMetadataStore(TEST_MYSQL_URL)
     store.save(buffer)

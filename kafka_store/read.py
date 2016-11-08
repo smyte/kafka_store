@@ -9,10 +9,3 @@ def read_file(filename):
     with open(filename, 'rb') as fo:
         for record in reader(fo):
             yield record
-
-if __name__ == '__main__':
-    count = 0
-    for record in read_file(sys.argv[1]):
-        print(record)
-        count += 1
-    print('Read', count, 'messages')

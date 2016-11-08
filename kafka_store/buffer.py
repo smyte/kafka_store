@@ -24,6 +24,9 @@ SCHEMA = {
 HOUR_MS = 3600 * 1000
 KAFKA_SKEW_MS = 8 * HOUR_MS
 
+# @TODO: This could be a configuration option.
+PATH = '%(topic)s/%(partition)06d/%(offset)020d'
+
 logger = logging.getLogger('kafka_store.buffer')
 
 class OutputFile:
@@ -68,11 +71,12 @@ class PartitionBuffer:
         self.final_offset = None
         self.first_timestamp_ms = first_timestamp_ms
 
-        logger.info(
-            'Saving %s %d to %s from %d at %d',
-            self.topic, self.partition, self.filename,
-            self.first_offset, self.first_timestamp_ms
-        )
+        self.path = PATH % {
+            'topic': topic,
+            'partition': partition,
+            'offset': first_offset,
+        }
+        logger.info('Saving %s > %s', self.path, self.filename)
 
     def mark_eof(self):
         self.eof = True
@@ -93,6 +97,12 @@ class PartitionBuffer:
     def close(self):
         self._writer.flush()
         self.closed = True
+        logger.info(
+            'Closed %s > %s records=%d %.1fkB',
+            self.path, self.filename,
+            self.count,
+            self.byte_size / 1000,
+        )
 
     @property
     def byte_size(self):
