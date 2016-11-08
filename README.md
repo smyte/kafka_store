@@ -41,7 +41,7 @@ INFO:kafka_store.handler:Committed sample/000005/00000000000000000000
 INFO:kafka_store.buffer:Saving sample/000005/00000000000000000002 > /tmp/tmpkz9mro1t
 
 # In a seperate window
-$ kafka-store-local-reader --wait ~/kafka-data/sample/000005/00000000000000000000
+$ kafka-store-reader local --wait ~/kafka-data/sample/000005/00000000000000000000
 {"filename": "00000000000000000000", "key": null, "offset": 0, "timestamp": 1478570870012, "value": "hello"}
 {"filename": "00000000000000000000", "key": null, "offset": 1, "timestamp": 1478570875023, "value": "world"}
 Next file not ready yet. Waiting for: /home/josh/kafka-data/sample/000005/00000000000000000002
