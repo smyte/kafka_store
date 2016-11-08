@@ -28,6 +28,32 @@ Our guarantee is **stronger**. By using the new timestamp feature of Kafka we ca
 
 ## Example
 
+```
+# Write some sample data into partition 5 on the `sample` topic
+$ (echo hello; sleep 5; echo world; sleep 15; echo '!') | kafkacat -P -b localhost -t sample -p 5
+
+# Start up the kafka store
+$ kafka-store --broker-list localhost --topic test --group kafka-store --local-store ~/kafka-data/ --offset-reset earliest --verbose
+INFO:pylib.seqconsumer:Consuming from partitions: 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19
+INFO:kafka_store.buffer:Saving sample/000005/00000000000000000000 > /tmp/tmpirblvjzx
+INFO:kafka_store.buffer:Closed sample/000005/00000000000000000000 > /tmp/tmpirblvjzx records=2 0.3kB
+INFO:kafka_store.handler:Committed sample/000005/00000000000000000000
+INFO:kafka_store.buffer:Saving sample/000005/00000000000000000002 > /tmp/tmpkz9mro1t
+
+# In a seperate window
+$ kafka-store-local-reader --wait ~/kafka-data/sample/000005/00000000000000000000
+{"filename": "00000000000000000000", "key": null, "offset": 0, "timestamp": 1478570870012, "value": "hello"}
+{"filename": "00000000000000000000", "key": null, "offset": 1, "timestamp": 1478570875023, "value": "world"}
+Next file not ready yet. Waiting for: /home/josh/kafka-data/sample/000005/00000000000000000002
+
+```
+
+**NOTE**: The `offset-reset` is required for the initial run, but not recommended to be left on in production after that.
+
+You can also see that the final message `'!'` does not come through immediately. The file is closed after "world" because of twenty seconds passes, but the final file will only be closed much later. This is because we cannot guarantee Kafka will not send a message with a timestamp <15 seconds after the "." timestamp because [time is hard](http://infiniteundo.com/post/25326999628/falsehoods-programmers-believe-about-time).
+
+Eventually if there is no more traffic on the topic it will be closed anyway. The current setting waits eight hours to be super safe.
+
 ## Future work
 
 We're releasing a product that works as required by us, but we're very aware it won't fulful all (or even most) of potential use cases. Unfortunately as a startup we don't have the time to spare to complete these, but we're happy to review pull requests and work with the community to get required features out the door.
