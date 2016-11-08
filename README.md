@@ -26,6 +26,22 @@ Our guarantee is **stronger**. By using the new timestamp feature of Kafka we ca
 * A `librdkafka` version that supports timestamps. If you're using compression you might want to check our [un-merged patch](https://github.com/edenhill/librdkafka/pull/858).
 * We do not (yet) support compacted topics.
 
+## Installation
+
+```
+$ pip3 install kafka-store
+
+$ kafka-store
+Usage:
+  kafka-store --broker-list <broker> --topic <topic> --group <group> [options]
+  kafka-store (-h | --help)
+
+$ kafka-store-reader
+Usage:
+  kafka-store-reader local <path> [options]
+  kafka-store-reader (-h | --help)
+```
+
 ## Example
 
 ```

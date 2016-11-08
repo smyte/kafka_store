@@ -2,8 +2,8 @@
 """kafka-store
 
 Usage:
-  ./main --broker-list <broker> --topic <topic> --group <group> [options]
-  ./main (-h | --help)
+  kafka-store --broker-list <broker> --topic <topic> --group <group> [options]
+  kafka-store (-h | --help)
 
 Options:
   -h --help                       Show this screen.
