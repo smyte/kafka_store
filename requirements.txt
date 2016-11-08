@@ -2,7 +2,7 @@ bitmath==1.3.1.2
 docopt==0.6.2
 google-api-python-client==1.5.5
 mysqlclient==1.3.9
-smyte_pylib==0.2.2
+smyte_pylib==0.2.3
 confluent_kafka_smyte==0.9.3
 
 -e git+https://github.com/tebeka/fastavro.git@644837ddec82ed883d0e7f655c87a2e3ba1376b4#egg=fastavro
