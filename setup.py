@@ -27,7 +27,7 @@ test_requirements = [
 
 setup(
     name='kafka_store',
-    version='0.1.2',
+    version='0.1.3',
     description="Kafka Store provides an easy way of archiving data from Kafka",
     long_description=readme + '\n\n' + history,
     author="Josh Yudaken",
