@@ -17,7 +17,7 @@ requirements = [
     'mock',
     'mysqlclient',
     'fastavro',
-    'confluent_kafka',
+    'confluent_kafka_smyte',
     'smyte_pylib',
 ]
 
@@ -27,7 +27,7 @@ test_requirements = [
 
 setup(
     name='kafka_store',
-    version='0.1.0',
+    version='0.1.1',
     description="Kafka Store provides an easy way of archiving data from Kafka",
     long_description=readme + '\n\n' + history,
     author="Josh Yudaken",
