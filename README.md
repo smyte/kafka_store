@@ -45,12 +45,14 @@ $ kafka-store-local-reader --wait ~/kafka-data/sample/000005/0000000000000000000
 {"filename": "00000000000000000000", "key": null, "offset": 0, "timestamp": 1478570870012, "value": "hello"}
 {"filename": "00000000000000000000", "key": null, "offset": 1, "timestamp": 1478570875023, "value": "world"}
 Next file not ready yet. Waiting for: /home/josh/kafka-data/sample/000005/00000000000000000002
+{"filename": "00000000000000000002", "key": null, "offset": 2, "timestamp": 1478570890054, "value": "!"}
+Next file not ready yet. Waiting for: /home/josh/kafka-data/sample/000005/00000000000000000003
 
 ```
 
 **NOTE**: The `offset-reset` is required for the initial run, but not recommended to be left on in production after that.
 
-You can also see that the final message `'!'` does not come through immediately. The file is closed after "world" because of twenty seconds passes, but the final file will only be closed much later. This is because we cannot guarantee Kafka will not send a message with a timestamp <15 seconds after the "." timestamp because [time is hard](http://infiniteundo.com/post/25326999628/falsehoods-programmers-believe-about-time).
+You can also see that the final message `'!'` does not come through immediately. The file is closed after "world" because of twenty seconds passed from "hello" to "!", but the final file will only be closed much later if there are no more messages. This is because we cannot guarantee Kafka will not send a message with a timestamp <15 seconds after the "!" timestamp ([time is hard](http://infiniteundo.com/post/25326999628/falsehoods-programmers-believe-about-time)).
 
 Eventually if there is no more traffic on the topic it will be closed anyway. The current setting waits eight hours to be super safe.
 
