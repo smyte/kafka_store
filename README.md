@@ -2,13 +2,13 @@
 
 [![Build Status](https://travis-ci.org/smyte/kafka_store.svg?branch=master)](https://travis-ci.org/smyte/kafka_store)
 
-Kafka store provides a safe method for long term archiving of Kafka topics.
+Kafka store guarantees consistent archives of Kafka topics to an object store.
 
 ## Features
 
 * **Simple guarantee**. Kafka Store ensures that every single message in a Kafka topic is backed up to Google Cloud Storage **exactly once**, with a **predictable filename** and in a **fault tolerant** manner.
 * Saves large **compressed** avro-encoded files to your server with **low memory requirements**.
-* Optionally logs files to a **MySQL table** with offset ranges for quicker lookup.
+* Optionally log file metadata to a **MySQL table** with offset ranges for quicker lookup.
 
 ## Comparison to Secor
 
@@ -74,9 +74,10 @@ Eventually if there is no more traffic on the topic it will be closed anyway. Th
 
 ## Future work
 
-We're releasing a product that works for our requirements, but we're very aware it won't fulfil all (or even most) of potential use cases. Unfortunately as a startup we don't have the time to spare to complete these, but we're happy to review pull requests and work with the community to get required features out the door.
+We're releasing a product that works for our requirements, but we're very aware it won't fulfill all (or even most) of potential use cases. Unfortunately as a startup we don't have the time to spare to complete these, but we're happy to review pull requests and work with the community to get required features out the door.
 
 * Using a configuration file rather than taking all options via the command line. This will be a pre-requisite for most of the other tasks.
 * Full support for Google Cloud authentication. At the moment we're running inside GCE so the default authentication *just works*.
 * Support for S3, Azure, and other long term storage systems.
 * Consuming from mulitple topics on the same instance. At the moment we only support a single topic.
+* Move avro schema out of `buffer.py` and into `schema/` using `pkg_resources` in setup.py
