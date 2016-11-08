@@ -23,10 +23,12 @@ Our guarantee is **stronger**. By using the new timestamp feature of Kafka we ca
 ## Requirements
 
 * Timestamps must be enabled on your Kafka Broker. This requires newer versions of Kafka and minimum protocol 0.10.0.0 enabled.
-* A `librdkafka` version that supports timestamps. If you're using compression you might want to check our [un-merged patch](https://github.com/edenhill/librdkafka/pull/858).
-* We do not (yet) support compacted topics.
+* A `librdkafka` version that supports timestamps.
+* The topic is not compacted - we do not (yet) support the feature.
 
 ## Installation
+
+You will need to install [librdkafka](https://github.com/edenhill/librdkafka). We recommend using [our fork](https://github.com/smyte-forks/librdkafka) temporarily until they've merged our [bug fix](https://github.com/edenhill/librdkafka/pull/858) for timestamps in compressed data.
 
 ```
 $ pip3 install kafka-store
