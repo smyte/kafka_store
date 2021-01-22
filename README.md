@@ -2,6 +2,8 @@
 
 [![Build Status](https://travis-ci.org/smyte/kafka_store.svg?branch=master)](https://travis-ci.org/smyte/kafka_store)
 
+**No longer maintained:** Please note that this code is no longer being actively maintained.
+
 Kafka store guarantees consistent archives of Kafka topics to an object store.
 
 ## Features
